@@ -53,3 +53,34 @@ for row in table.find_all('tr'):
     data = [col.text.strip() for col in cols]
     if data:
         print(data)
+
+
+''' from bs4 import BeautifulSoup
+
+html = """
+<html>
+  <head><title>Sample Website</title></head>
+  <body>
+    <h2 class="title">Welcome to the Blog</h2>
+    <div class="post">
+      <h3>First Post</h3>
+      <p>This is the first article.</p>
+    </div>
+    <div class="post">
+      <h3>Second Post</h3>
+      <p>This is the second article.</p>
+    </div>
+  </body>
+</html>
+"""
+
+# Parse the HTML
+soup = BeautifulSoup(html, "html.parser")
+
+# Find all h3 tags (article titles)
+titles = soup.find_all("h3")
+
+# Print each title
+for t in titles:
+    print(t.text)
+'''
