@@ -14,3 +14,8 @@ resized_image = cv2.resize(image, (300, 200))  # width=300, height=200
 cv2.imshow('Resized Image', resized_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+rotated_image = cv2.rotate(resized_image, cv2.ROTATE_90_CLOCKWISE)
+cv2.imshow('Rotated Image', rotated_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
