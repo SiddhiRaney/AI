@@ -49,3 +49,17 @@ cv2.destroyAllWindows()
 
 # Step 9: Save the final image with contours
 cv2.imwrite('output_with_contours.jpg', contour_image)
+
+# Draw a rectangle on the image (x1, y1, x2, y2)
+rectangle_image = contour_image.copy()
+cv2.rectangle(rectangle_image, (50, 50), (250, 150), (255, 0, 0), 2)  # Blue rectangle
+cv2.imshow('Rectangle Drawn', rectangle_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# Draw a circle (center, radius)
+circle_image = contour_image.copy()
+cv2.circle(circle_image, (150, 100), 40, (0, 0, 255), 2)  # Red circle
+cv2.imshow('Circle Drawn', circle_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
