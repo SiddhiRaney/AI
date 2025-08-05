@@ -63,3 +63,17 @@ cv2.circle(circle_image, (150, 100), 40, (0, 0, 255), 2)  # Red circle
 cv2.imshow('Circle Drawn', circle_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+#Text on IMG
+text_image = contour_image.copy()
+cv2.putText(text_image, 'OpenCV Rocks!', (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+cv2.imshow('Text on Image', text_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#Convert to Grey scale
+gray = cv2.cvtColor(rotated_image, cv2.COLOR_BGR2GRAY)
+cv2.imshow('Grayscale Image', gray)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
