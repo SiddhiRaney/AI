@@ -1,38 +1,85 @@
-import numpy as np
+#include <bits/stdc++.h>
+using namespace std;
 
-# Calculate a moving average for y2
-window_size = 3
-moving_avg = np.convolve(y2, np.ones(window_size)/window_size, mode='valid')
+static constexpr int MOD = 1e9+7, BASE30 = (1<<30) % MOD;
 
-# Fill area under y2 for emphasis
-plt.fill_between(x, y2, color='green', alpha=0.1)
+class Solution {
+public:
+    // Fast modular exponentiation
+    static int modPow(long long base, int exponent) {
+        if (exponent == 0) return 1;
+        long long multiplier = (exponent & 1) ? base : 1;
+        return modPow(base * base % MOD, exponent >> 1) * multiplier % MOD;
+    }
 
-# Add secondary y-axis for transformed data
-fig, ax1 = plt.subplots(figsize=(8, 5))
+    // Compute 2^exponent % MOD efficiently
+    static int pow2mod(int exponent) {
+        if (exponent < 30) return 1 << exponent;
+        auto [quotient, remainder] = div(exponent, 30);
+        long long basePart = modPow(BASE30, quotient);
+        return basePart * (1 << remainder) % MOD;
+    }
 
-ax1.plot(x, y, label='Decreasing Line', color='blue', marker='o', linewidth=2)
-ax1.plot(x, y2, label='Increasing Line', color='green', linestyle='--', marker='s')
-ax1.plot(x, y3, label='Constant Line', color='red', linestyle='-.', marker='^')
-ax1.fill_between(x, y2, color='green', alpha=0.1)
-ax1.scatter(3, 6, color='purple', s=100, zorder=5, label='Special Point')
-ax1.annotate('Peak Value', xy=(1, 10), xytext=(1.5, 11),
-             arrowprops=dict(facecolor='black', arrowstyle='->'))
+    // Original problem: product of powers of 2 for query ranges
+    static vector<int> productQueries(int number, vector<vector<int>>& queries) {
+        const int queryCount = queries.size();
+        bitset<30> bits(number);
+        vector<int> exponents;
 
-# Secondary axis for moving average
-ax2 = ax1.twinx()
-ax2.plot(range(2, len(moving_avg)+2), moving_avg, label='Moving Avg (y2)', color='orange', linewidth=2)
+        for (int bitIndex = 0; bitIndex < 30; bitIndex++)
+            if (bits[bitIndex]) exponents.push_back(bitIndex);
 
-# Labels, grid, and legend
-ax1.set_xlabel('X Axis')
-ax1.set_ylabel('Primary Y Axis')
-ax2.set_ylabel('Secondary Y Axis')
-ax1.grid(True, linestyle=':', linewidth=0.7)
+        partial_sum(exponents.cbegin(), exponents.cend(), exponents.begin());
 
-# Combine legends from both axes
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+        vector<int> results(queryCount);
+        for (int i = 0; i < queryCount; i++) {
+            const int start = queries[i][0], end = queries[i][1];
+            const int totalExp = exponents[end] - ((start == 0) ? 0 : exponents[start - 1]);
+            results[i] = pow2mod(totalExp);
+        }
+        return results;
+    }
 
-plt.title('Enhanced Line Plot with Analysis')
-plt.tight_layout()
-plt.show()
+    // NEW: Count set bits in a number (Brian Kernighan's Algorithm)
+    static int countSetBits(int number) {
+        int count = 0;
+        while (number) {
+            number &= (number - 1);
+            count++;
+        }
+        return count;
+    }
+
+    // NEW: Convert integer to binary string representation
+    static string toBinaryString(int number) {
+        string result;
+        for (int i = 29; i >= 0; i--)
+            result.push_back((number & (1 << i)) ? '1' : '0');
+        return result;
+    }
+
+    // NEW: Compute prefix XOR for a range [l, r]
+    static int rangeXor(int l, int r) {
+        return prefixXor(r) ^ prefixXor(l - 1);
+    }
+
+private:
+    // Helper for rangeXor
+    static int prefixXor(int x) {
+        // Pattern: 0,1,x+1,0 repeating every 4 numbers
+        switch (x & 3) {
+            case 0: return x;
+            case 1: return 1;
+            case 2: return x + 1;
+            case 3: return 0;
+        }
+        return 0;
+    }
+};
+
+int main() {
+    // Example usage
+    vector<vector<int>> queries = {{0, 0}, {1, 1}, {0, 1}};
+    auto results = Solution::productQueries(13, queries);
+
+    cout << "Product
