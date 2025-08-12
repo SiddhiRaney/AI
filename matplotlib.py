@@ -40,7 +40,7 @@ public:
         return results;
     }
 
-    // NEW: Count set bits in a number (Brian Kernighan's Algorithm)
+    // Count set bits in a number (Brian Kernighan's Algorithm)
     static int countSetBits(int number) {
         int count = 0;
         while (number) {
@@ -50,7 +50,7 @@ public:
         return count;
     }
 
-    // NEW: Convert integer to binary string representation
+    // Convert integer to binary string representation
     static string toBinaryString(int number) {
         string result;
         for (int i = 29; i >= 0; i--)
@@ -58,7 +58,7 @@ public:
         return result;
     }
 
-    // NEW: Compute prefix XOR for a range [l, r]
+    // Compute prefix XOR for a range [l, r]
     static int rangeXor(int l, int r) {
         return prefixXor(r) ^ prefixXor(l - 1);
     }
@@ -78,8 +78,28 @@ private:
 };
 
 int main() {
-    // Example usage
+    // Example 1: Product Queries
     vector<vector<int>> queries = {{0, 0}, {1, 1}, {0, 1}};
     auto results = Solution::productQueries(13, queries);
+    cout << "Product Queries Results:\n";
+    for (auto r : results) cout << r << " ";
+    cout << "\n\n";
 
-    cout << "Product
+    // Example 2: Modular exponentiation
+    cout << "modPow(2, 10) % MOD = " << Solution::modPow(2, 10) << "\n";
+    cout << "pow2mod(45) % MOD = " << Solution::pow2mod(45) << "\n\n";
+
+    // Example 3: Count set bits
+    cout << "Count of set bits in 29 = " << Solution::countSetBits(29) << "\n";
+    cout << "Count of set bits in 1023 = " << Solution::countSetBits(1023) << "\n\n";
+
+    // Example 4: Binary string representation
+    cout << "Binary of 29 = " << Solution::toBinaryString(29) << "\n";
+    cout << "Binary of 1023 = " << Solution::toBinaryString(1023) << "\n\n";
+
+    // Example 5: Range XOR
+    cout << "XOR of range [3, 9] = " << Solution::rangeXor(3, 9) << "\n";
+    cout << "XOR of range [0, 5] = " << Solution::rangeXor(0, 5) << "\n";
+
+    return 0;
+}
