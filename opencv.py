@@ -1,79 +1,69 @@
-import cv2
-
-# Step 1: Read the original image
-image = cv2.imread('example.jpg')
-cv2.imshow('Image Window', image)
+# Step 10: Apply binary thresholding
+_, binary_image = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+cv2.imshow('Binary Threshold', binary_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 2: Resize the image
-resized_image = cv2.resize(image, (300, 200))  # width=300, height=200
-cv2.imshow('Resized Image', resized_image)
+# Step 11: Adaptive thresholding
+adaptive_thresh = cv2.adaptiveThreshold(
+    gray, 255,
+    cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    cv2.THRESH_BINARY,
+    11, 2
+)
+cv2.imshow('Adaptive Threshold', adaptive_thresh)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 3: Rotate the image 90 degrees clockwise
-rotated_image = cv2.rotate(resized_image, cv2.ROTATE_90_CLOCKWISE)
-cv2.imshow('Rotated Image', rotated_image)
+# Step 12: Morphological operations (Erosion & Dilation)
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+eroded = cv2.erode(binary_image, kernel, iterations=1)
+cv2.imshow('Eroded Image', eroded)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 4: Convert to grayscale
-gray_image = cv2.cvtColor(rotated_image, cv2.COLOR_BGR2GRAY)
-cv2.imshow('Grayscale Image', gray_image)
+dilated = cv2.dilate(binary_image, kernel, iterations=1)
+cv2.imshow('Dilated Image', dilated)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 5: Apply Gaussian Blur to reduce noise
-blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
-cv2.imshow('Blurred Image', blurred_image)
+# Step 13: Histogram Equalization for better contrast
+equalized_image = cv2.equalizeHist(gray)
+cv2.imshow('Histogram Equalized', equalized_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 6: Perform Canny edge detection
-edges = cv2.Canny(blurred_image, threshold1=50, threshold2=150)
-cv2.imshow('Edge Detected Image', edges)
+# Step 14: Convert to HSV color space
+hsv_image = cv2.cvtColor(rotated_image, cv2.COLOR_BGR2HSV)
+cv2.imshow('HSV Image', hsv_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 7: Find contours from edges
-contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-# Step 8: Draw contours on a copy of the rotated image
-contour_image = rotated_image.copy()
-cv2.drawContours(contour_image, contours, -1, (0, 255, 0), 2)  # Green contours
-
-cv2.imshow('Contours on Image', contour_image)
+# Step 15: Mask a color range (e.g., green)
+lower_green = (40, 40, 40)
+upper_green = (70, 255, 255)
+mask = cv2.inRange(hsv_image, lower_green, upper_green)
+cv2.imshow('Green Mask', mask)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Step 9: Save the final image with contours
-cv2.imwrite('output_with_contours.jpg', contour_image)
-
-# Draw a rectangle on the image (x1, y1, x2, y2)
-rectangle_image = contour_image.copy()
-cv2.rectangle(rectangle_image, (50, 50), (250, 150), (255, 0, 0), 2)  # Blue rectangle
-cv2.imshow('Rectangle Drawn', rectangle_image)
+# Step 16: Draw a polygon
+polygon_image = rotated_image.copy()
+points = [(100, 50), (200, 80), (250, 200), (120, 250)]
+pts = np.array(points, np.int32).reshape((-1, 1, 2))
+cv2.polylines(polygon_image, [pts], isClosed=True, color=(255, 255, 0), thickness=2)
+cv2.imshow('Polygon Drawn', polygon_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# Draw a circle (center, radius)
-circle_image = contour_image.copy()
-cv2.circle(circle_image, (150, 100), 40, (0, 0, 255), 2)  # Red circle
-cv2.imshow('Circle Drawn', circle_image)
+# Step 17: Blend two images
+# For blending, resize another image to match the rotated image
+overlay_image = cv2.imread('example2.jpg')
+overlay_resized = cv2.resize(overlay_image, (rotated_image.shape[1], rotated_image.shape[0]))
+blended_image = cv2.addWeighted(rotated_image, 0.7, overlay_resized, 0.3, 0)
+cv2.imshow('Blended Image', blended_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-#Text on IMG
-text_image = contour_image.copy()
-cv2.putText(text_image, 'OpenCV Rocks!', (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
-cv2.imshow('Text on Image', text_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-#Convert to Grey scale
-gray = cv2.cvtColor(rotated_image, cv2.COLOR_BGR2GRAY)
-cv2.imshow('Grayscale Image', gray)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
+# Step 18: Save the final blended image
+cv2.imwrite('final_blended_image.jpg', blended_image)
