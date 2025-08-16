@@ -1,32 +1,68 @@
-import tensorflow as tf
-from tensorflow.keras.datasets import mnist
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Flatten, Dense
-from tensorflow.keras.utils import to_categorical
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
 
-# Load data
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+# Save the model
+model.save("mnist_model.h5")
+print("Model saved as mnist_model.h5")
 
-# Normalize data
-x_train, x_test = x_train / 255.0, x_test / 255.0
+# Plot training history
+history = model.fit(
+    x_train, y_train,
+    epochs=5,
+    batch_size=32,
+    validation_split=0.1,
+    verbose=1
+)
 
-# Convert labels to one-hot
-y_train = to_categorical(y_train)
-y_test = to_categorical(y_test)
+# Plot Accuracy & Loss curves
+plt.figure(figsize=(12, 5))
 
-# Build model
-model = Sequential([
-    Flatten(input_shape=(28, 28)),
-    Dense(128, activation='relu'),
-    Dense(10, activation='softmax')
-])
+# Accuracy plot
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Train Acc')
+plt.plot(history.history['val_accuracy'], label='Val Acc')
+plt.title("Model Accuracy")
+plt.xlabel("Epochs")
+plt.ylabel("Accuracy")
+plt.legend()
 
-# Compile model
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# Loss plot
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Val Loss')
+plt.title("Model Loss")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.legend()
 
-# Train model
-model.fit(x_train, y_train, epochs=5, batch_size=32, validation_split=0.1)
+plt.show()
 
-# Evaluate
-test_loss, test_acc = model.evaluate(x_test, y_test)
-print(f"Test Accuracy: {test_acc:.2f}")
+# Predictions
+y_pred = model.predict(x_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true = np.argmax(y_test, axis=1)
+
+# Confusion matrix
+cm = confusion_matrix(y_true, y_pred_classes)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.title("Confusion Matrix")
+plt.show()
+
+# Classification report
+print("\nClassification Report:\n")
+print(classification_report(y_true, y_pred_classes))
+
+# Show some predictions
+def plot_sample(i):
+    plt.imshow(x_test[i], cmap="gray")
+    plt.title(f"True: {y_true[i]}, Pred: {y_pred_classes[i]}")
+    plt.axis("off")
+    plt.show()
+
+for i in range(5):
+    plot_sample(i)
