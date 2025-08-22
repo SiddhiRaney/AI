@@ -38,12 +38,14 @@ def transcribe_audio(file_path, save_output=True, translate=False):
             output_file = os.path.splitext(file_path)[0] + "_transcript.txt"
             with open(output_file, "w", encoding="utf-8") as f:
                 f.write(transcript.text)
-            print(f"\nTranscript saved to: {output_file}")
+            print(f"\n✅ Transcript saved to: {output_file}")
 
     except Exception as e:
         print(f"❌ Error: {e}")
 
+
 # Example usage
 if __name__ == "__main__":
-    # Replace with your audio file
-    aud
+    # Replace with your actual audio file path
+    audio_path = "audio_sample.mp3"  # <-- change this to your file
+    transcribe_audio(audio_path, save_output=True, translate=False)
