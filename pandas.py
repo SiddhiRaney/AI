@@ -60,3 +60,24 @@ print("\nData saved to 'employees.csv'")
 loaded_df = pd.read_csv("employees.csv")
 print("\nData loaded from CSV:\n", loaded_df.head())
 
+
+# ======================
+# iloc Examples
+# ======================
+
+print("\n--- iloc Examples ---\n")
+
+# 1. Select first row
+print("First row:\n", df.iloc[0], "\n")
+
+# 2. Select specific element (row 0, column 1 -> Age of Alice)
+print("Element at [0,1]:", df.iloc[0, 1], "\n")
+
+# 3. Select first two rows
+print("First two rows:\n", df.iloc[0:2], "\n")
+
+# 4. Select Name and Salary of Alice & Charlie (rows 0 & 2, cols 0 & 3)
+print("Name & Salary of Alice and Charlie:\n", df.iloc[[0, 2], [0, 3]], "\n")
+
+# 5. Select entire Age column using index
+print("Age column:\n", df.iloc[:, 1], "\n")
