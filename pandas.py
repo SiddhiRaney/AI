@@ -80,3 +80,19 @@ print("4. Name & Salary of Alice and Charlie:\n", df.iloc[[0, 2], [0, 3]], "\n")
 
 # 5. Entire Age column
 print("5. Age column:\n", df.iloc[:, 1], "\n")
+
+
+# 6. Last row
+print("6. Last row:\n", df.iloc[-1], "\n")
+
+# 7. Last 3 rows
+print("7. Last 3 rows:\n", df.iloc[-3:], "\n")
+
+# 8. Rows 1 to 3 and columns 'Name' & 'Age'
+print("8. Rows 1 to 3 with Name & Age:\n", df.iloc[1:4, [0, 1]], "\n")
+
+# 9. Salary column using iloc (alternative way)
+print("9. Salary column:\n", df.iloc[:, df.columns.get_loc('Salary')], "\n")
+
+# 10. Every alternate row (step slicing)
+print("10. Every alternate row:\n", df.iloc[::2], "\n")
