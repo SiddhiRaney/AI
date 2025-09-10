@@ -63,6 +63,56 @@ public:
         return prefixXor(r) ^ prefixXor(l - 1);
     }
 
+    // GCD using Euclidean algorithm
+    static int gcd(int a, int b) {
+        return (b == 0) ? a : gcd(b, a % b);
+    }
+
+    // LCM using GCD
+    static long long lcm(int a, int b) {
+        return (1LL * a * b) / gcd(a, b);
+    }
+
+    // Factorial mod
+    static int factorialMod(int n) {
+        long long result = 1;
+        for (int i = 2; i <= n; i++) {
+            result = (result * i) % MOD;
+        }
+        return result;
+    }
+
+    // Check if a number is prime
+    static bool isPrime(int n) {
+        if (n <= 1) return false;
+        if (n <= 3) return true;
+        if (n % 2 == 0 || n % 3 == 0) return false;
+        for (int i = 5; i * i <= n; i += 6) {
+            if (n % i == 0 || n % (i + 2) == 0) return false;
+        }
+        return true;
+    }
+
+    // Fibonacci mod
+    static int fibonacciMod(int n) {
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        long long a = 0, b = 1, c;
+        for (int i = 2; i <= n; i++) {
+            c = (a + b) % MOD;
+            a = b;
+            b = c;
+        }
+        return b;
+    }
+
+    // Prefix sum for an array
+    static vector<long long> prefixSum(const vector<int>& arr) {
+        vector<long long> pref(arr.size());
+        partial_sum(arr.begin(), arr.end(), pref.begin());
+        return pref;
+    }
+
 private:
     // Helper for rangeXor
     static int prefixXor(int x) {
@@ -99,7 +149,29 @@ int main() {
 
     // Example 5: Range XOR
     cout << "XOR of range [3, 9] = " << Solution::rangeXor(3, 9) << "\n";
-    cout << "XOR of range [0, 5] = " << Solution::rangeXor(0, 5) << "\n";
+    cout << "XOR of range [0, 5] = " << Solution::rangeXor(0, 5) << "\n\n";
+
+    // Example 6: GCD and LCM
+    cout << "GCD of 54 and 24 = " << Solution::gcd(54, 24) << "\n";
+    cout << "LCM of 54 and 24 = " << Solution::lcm(54, 24) << "\n\n";
+
+    // Example 7: Factorial mod
+    cout << "Factorial of 10 % MOD = " << Solution::factorialMod(10) << "\n\n";
+
+    // Example 8: Prime check
+    cout << "Is 29 prime? " << (Solution::isPrime(29) ? "Yes" : "No") << "\n";
+    cout << "Is 100 prime? " << (Solution::isPrime(100) ? "Yes" : "No") << "\n\n";
+
+    // Example 9: Fibonacci mod
+    cout << "Fibonacci(10) % MOD = " << Solution::fibonacciMod(10) << "\n";
+    cout << "Fibonacci(50) % MOD = " << Solution::fibonacciMod(50) << "\n\n";
+
+    // Example 10: Prefix sum
+    vector<int> arr = {1, 2, 3, 4, 5};
+    auto pref = Solution::prefixSum(arr);
+    cout << "Prefix sums of {1,2,3,4,5}:\n";
+    for (auto v : pref) cout << v << " ";
+    cout << "\n";
 
     return 0;
 }
