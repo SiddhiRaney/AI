@@ -6,6 +6,12 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from sklearn.model_selection import learning_curve, validation_curve
+from sklearn.inspection import permutation_importance
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+from sklearn.preprocessing import label_binarize
+from sklearn.multiclass import OneVsRestClassifier
+import joblib
 
 # Step 1: Load the dataset
 iris = load_iris()
@@ -84,3 +90,87 @@ plt.xlabel(iris.feature_names[0])
 plt.ylabel(iris.feature_names[1])
 plt.title("Decision Boundaries (First 2 Features)")
 plt.show()
+
+# ============================
+# Step 11: Learning Curve
+# ============================
+train_sizes, train_scores, test_scores = learning_curve(
+    model, X, y, cv=5, scoring='accuracy',
+    train_sizes=np.linspace(0.1, 1.0, 10), n_jobs=-1
+)
+train_scores_mean = np.mean(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+
+plt.figure(figsize=(6,4))
+plt.plot(train_sizes, train_scores_mean, label="Training Score")
+plt.plot(train_sizes, test_scores_mean, label="Cross-validation Score")
+plt.xlabel("Training Set Size")
+plt.ylabel("Accuracy")
+plt.title("Learning Curve")
+plt.legend()
+plt.show()
+
+# ============================
+# Step 12: Validation Curve (n_estimators)
+# ============================
+param_range = [10, 50, 100, 200]
+train_scores, test_scores = validation_curve(
+    RandomForestClassifier(random_state=42),
+    X, y, param_name="n_estimators", param_range=param_range,
+    cv=5, scoring="accuracy", n_jobs=-1
+)
+train_scores_mean = np.mean(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+
+plt.figure(figsize=(6,4))
+plt.plot(param_range, train_scores_mean, label="Training Score")
+plt.plot(param_range, test_scores_mean, label="CV Score")
+plt.xlabel("n_estimators")
+plt.ylabel("Accuracy")
+plt.title("Validation Curve")
+plt.legend()
+plt.show()
+
+# ============================
+# Step 13: Permutation Feature Importance
+# ============================
+result = permutation_importance(model, X_test, y_test, n_repeats=10, random_state=42, n_jobs=-1)
+sorted_idx = result.importances_mean.argsort()
+
+plt.figure(figsize=(6,4))
+plt.barh(np.array(iris.feature_names)[sorted_idx], result.importances_mean[sorted_idx])
+plt.xlabel("Mean Importance")
+plt.title("Permutation Feature Importance")
+plt.show()
+
+# ============================
+# Step 14: ROC Curve (Multiclass One-vs-Rest)
+# ============================
+y_bin = label_binarize(y, classes=[0,1,2])
+X_train_bin, X_test_bin, y_train_bin, y_test_bin = train_test_split(X, y_bin, test_size=0.2, random_state=42)
+
+clf = OneVsRestClassifier(RandomForestClassifier(n_estimators=100, random_state=42))
+clf.fit(X_train_bin, y_train_bin)
+y_score = clf.predict_proba(X_test_bin)
+
+fpr, tpr, roc_auc = {}, {}, {}
+for i in range(len(iris.target_names)):
+    fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_score[:, i])
+    roc_auc[i] = auc(fpr[i], tpr[i])
+
+plt.figure(figsize=(6,4))
+for i, label in enumerate(iris.target_names):
+    plt.plot(fpr[i], tpr[i], label=f"{label} (AUC={roc_auc[i]:.2f})")
+plt.plot([0,1], [0,1], 'k--')
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Multiclass ROC Curve")
+plt.legend()
+plt.show()
+
+# ============================
+# Step 15: Save and Load Model
+# ============================
+joblib.dump(model, "random_forest_model.pkl")
+loaded_model = joblib.load("random_forest_model.pkl")
+print("Loaded model accuracy:", loaded_model.score(X_test, y_test))
