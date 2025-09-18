@@ -1,374 +1,277 @@
-// ---------- Continuation: More utilities (add to class Solution) ----------
+
 public:
 
-    // ---------- Safe Modular Helpers ----------
-    static inline int modAdd(int a, int b) {
-        int s = a + b;
-        if (s >= MOD) s -= MOD;
-        return s;
-    }
-    static inline int modSub(int a, int b) {
-        int s = a - b;
-        if (s < 0) s += MOD;
-        return s;
-    }
-    static inline int modMul(long long a, long long b) {
-        return (int)( (a*b) % MOD );
-    }
-
-    // Extended GCD -> returns gcd and sets x,y such that ax+by=g
-    static long long extGcd(long long a, long long b, long long &x, long long &y) {
-        if (b == 0) { x = 1; y = 0; return a; }
-        long long x1, y1;
-        long long g = extGcd(b, a % b, x1, y1);
-        x = y1;
-        y = x1 - (a / b) * y1;
-        return g;
-    }
-
-    // Modular inverse using extended gcd (works even if MOD is not prime when inverse exists)
-    static long long modInverseExt(long long a, long long mod) {
-        long long x, y;
-        long long g = extGcd(a, mod, x, y);
-        if (g != 1) return -1; // inverse doesn't exist
-        x %= mod;
-        if (x < 0) x += mod;
-        return x;
-    }
-
-    // ---------- Disjoint Set Union (Union-Find) ----------
-    struct DSU {
-        int n;
-        vector<int> parent, sz;
-        DSU(int n=0): n(n), parent(n+1), sz(n+1,1) {
-            iota(parent.begin(), parent.end(), 0);
-        }
-        void reset(int m) {
-            n = m;
-            parent.resize(n+1);
-            sz.assign(n+1,1);
-            iota(parent.begin(), parent.end(), 0);
-        }
-        int find(int x) {
-            return parent[x]==x ? x : parent[x]=find(parent[x]);
-        }
-        bool unite(int a, int b) {
-            a = find(a); b = find(b);
-            if (a==b) return false;
-            if (sz[a] < sz[b]) swap(a,b);
-            parent[b] = a;
-            sz[a] += sz[b];
-            return true;
-        }
-    };
-
-    // ---------- Fenwick / BIT ----------
-    struct Fenwick {
-        int n;
-        vector<long long> bit;
-        Fenwick(int n=0) { init(n); }
-        void init(int n_) { n = n_; bit.assign(n+1, 0); }
-        void add(int idx, long long val) { for (; idx<=n; idx += idx & -idx) bit[idx] += val; }
-        long long sum(int idx) { long long r=0; for (; idx>0; idx -= idx & -idx) r += bit[idx]; return r; }
-        long long rangeSum(int l, int r) { return sum(r) - sum(l-1); }
-    };
-
-    // ---------- Segment Tree (sum) ----------
-    struct SegmentTree {
-        int n;
-        vector<long long> st;
-        SegmentTree() : n(0) {}
-        SegmentTree(const vector<long long>& arr) { build(arr); }
-        void build(const vector<long long>& arr) {
-            n = arr.size();
-            st.assign(4*n+4, 0);
-            buildRec(1,0,n-1,arr);
-        }
-        void buildRec(int p,int l,int r,const vector<long long>& a) {
-            if (l==r) { st[p]=a[l]; return; }
-            int m=(l+r)/2;
-            buildRec(p<<1,l,m,a);
-            buildRec(p<<1|1,m+1,r,a);
-            st[p]=st[p<<1]+st[p<<1|1];
-        }
-        long long query(int L,int R){ return queryRec(1,0,n-1,L,R); }
-        long long queryRec(int p,int l,int r,int L,int R){
-            if (L>r || R<l) return 0;
-            if (L<=l && r<=R) return st[p];
-            int m=(l+r)/2;
-            return queryRec(p<<1,l,m,L,R) + queryRec(p<<1|1,m+1,r,L,R);
-        }
-        void update(int idx,long long val){ updateRec(1,0,n-1,idx,val); }
-        void updateRec(int p,int l,int r,int idx,long long val){
-            if (l==r){ st[p]=val; return; }
-            int m=(l+r)/2;
-            if (idx<=m) updateRec(p<<1,l,m,idx,val);
-            else updateRec(p<<1|1,m+1,r,idx,val);
-            st[p]=st[p<<1]+st[p<<1|1];
-        }
-    };
-
-    // ---------- Graph Algorithms ----------
-    // Dijkstra (returns distances vector)
-    static vector<long long> dijkstra(int n, const vector<vector<pair<int,int>>>& adj, int src) {
-        const long long INF = (1LL<<60);
-        vector<long long> dist(n+1, INF);
-        dist[src] = 0;
-        priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<pair<long long,int>>> pq;
-        pq.push({0, src});
-        while (!pq.empty()) {
-            auto [d,u] = pq.top(); pq.pop();
-            if (d != dist[u]) continue;
-            for (auto &e : adj[u]) {
-                int v = e.first; long long w = e.second;
-                if (dist[v] > d + w) {
-                    dist[v] = d + w;
-                    pq.push({dist[v], v});
-                }
-            }
-        }
-        return dist;
-    }
-
-    // BFS (unweighted shortest dist)
-    static vector<int> bfs(int n, const vector<vector<int>>& adj, int src) {
-        const int INF = 1e9;
-        vector<int> dist(n+1, INF);
-        queue<int> q;
-        dist[src] = 0; q.push(src);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            for (int v : adj[u]) {
-                if (dist[v] == INF) {
-                    dist[v] = dist[u] + 1;
-                    q.push(v);
-                }
-            }
-        }
-        return dist;
-    }
-
-    // Topological sort (Kahn). Returns empty vector if cycle found.
-    static vector<int> topoSort(int n, const vector<vector<int>>& adj) {
-        vector<int> indeg(n+1,0);
-        for (int u=1; u<=n; ++u)
-            for (int v: adj[u]) indeg[v]++;
-        queue<int> q;
-        for (int i=1;i<=n;++i) if (indeg[i]==0) q.push(i);
-        vector<int> order;
-        while (!q.empty()) {
-            int u=q.front(); q.pop();
-            order.push_back(u);
-            for (int v: adj[u]) {
-                if (--indeg[v]==0) q.push(v);
-            }
-        }
-        if ((int)order.size() != n) return {}; // cycle
-        return order;
-    }
-
-    // Kruskal MST: input edges as (w,u,v), returns mst weight and edges used
-    static pair<long long, vector<tuple<int,int,int>>> kruskal(int n, vector<tuple<int,int,int>> edges) {
-        sort(edges.begin(), edges.end()); // sort by weight
-        DSU dsu(n);
-        long long total = 0;
-        vector<tuple<int,int,int>> used;
-        for (auto &e : edges) {
-            int w,u,v; tie(w,u,v) = e;
-            if (dsu.unite(u,v)) {
-                total += w;
-                used.push_back(e);
-            }
-        }
-        return {total, used};
-    }
-
-    // Count connected components (undirected)
-    static int countComponents(int n, const vector<vector<int>>& adj) {
-        vector<char> vis(n+1, 0);
-        int cnt = 0;
-        for (int i=1;i<=n;++i) {
-            if (!vis[i]) {
-                cnt++;
-                stack<int> st; st.push(i); vis[i]=1;
-                while (!st.empty()) {
-                    int u = st.top(); st.pop();
-                    for (int v: adj[u]) if (!vis[v]) { vis[v]=1; st.push(v); }
-                }
-            }
-        }
-        return cnt;
-    }
-
-    // ---------- Strings: KMP / Z-function / Rolling Hash ----------
-    static vector<int> computeLPS(const string &pat) {
-        int n = pat.size();
-        vector<int> lps(n, 0);
-        for (int i=1, len=0; i<n; ) {
-            if (pat[i]==pat[len]) lps[i++] = ++len;
-            else if (len) len = lps[len-1];
-            else lps[i++] = 0;
-        }
-        return lps;
-    }
-    // KMP search: returns starting indices of matches
-    static vector<int> kmpSearch(const string &text, const string &pat) {
-        if (pat.empty()) return {};
-        vector<int> res;
-        auto lps = computeLPS(pat);
-        int i=0, j=0, n=text.size(), m=pat.size();
-        while (i<n) {
-            if (text[i]==pat[j]) { i++; j++; if (j==m) { res.push_back(i-j); j=lps[j-1]; } }
-            else if (j) j = lps[j-1];
-            else i++;
-        }
-        return res;
-    }
-
-    static vector<int> zFunction(const string &s) {
-        int n = s.size();
-        vector<int> z(n, 0);
-        int l=0, r=0;
-        for (int i=1; i<n; ++i) {
-            if (i<=r) z[i] = min(r-i+1, z[i-l]);
-            while (i+z[i] < n && s[z[i]] == s[i+z[i]]) z[i]++;
-            if (i+z[i]-1 > r) l=i, r=i+z[i]-1;
-        }
-        z[0] = n;
-        return z;
-    }
-
-    // Rolling Hash (Rabin-Karp) - 64-bit to avoid mod
-    struct RollingHash {
-        long long base;
-        vector<unsigned long long> pref, power;
-        RollingHash(const string &s, long long base = 91138233LL) : base(base) {
-            int n = s.size();
-            pref.assign(n+1,0);
-            power.assign(n+1,1);
-            for (int i=0;i<n;++i) {
-                pref[i+1] = pref[i]*base + (unsigned char)s[i] + 1;
-                power[i+1] = power[i]*base;
-            }
-        }
-        unsigned long long get(int l,int r){ // [l,r)
-            return pref[r] - pref[l]*power[r-l];
-        }
-    };
-
-    // ---------- Number Theory: smallest prime factor sieve & factorization ----------
-    static vector<int> spfSieve(int n) {
-        vector<int> spf(n+1);
-        for (int i=2;i<=n;++i) spf[i]=0;
-        for (int i=2;i<=n;++i) {
-            if (spf[i]==0) {
-                spf[i]=i;
-                if ((long long)i*i <= n) {
-                    for (int j=i*i;j<=n;j+=i) if (spf[j]==0) spf[j]=i;
-                }
-            }
-        }
-        return spf;
-    }
-    static vector<pair<int,int>> factorizeWithSPF(int x, const vector<int>& spf) {
-        vector<pair<int,int>> res;
-        while (x>1) {
-            int p = spf[x];
-            int cnt = 0;
-            while (x%p==0) { x/=p; ++cnt; }
-            res.push_back({p,cnt});
-        }
-        return res;
-    }
-
-    // Simple prime factorization for single number (works up to sqrt(n))
-    static vector<pair<long long,int>> primeFactorize(long long n) {
-        vector<pair<long long,int>> res;
-        for (long long p=2; p*p<=n; ++p) {
-            if (n%p==0) {
-                int c=0;
-                while (n%p==0) { n/=p; ++c; }
-                res.push_back({p,c});
-            }
-        }
-        if (n>1) res.push_back({n,1});
-        return res;
-    }
-
-    // ---------- Binary search helpers ----------
-    // lower_bound on vector
-    template<typename T>
-    static int lowerBoundIdx(const vector<T>& a, const T& key) {
-        return int(lower_bound(a.begin(), a.end(), key) - a.begin());
-    }
-    template<typename T>
-    static int upperBoundIdx(const vector<T>& a, const T& key) {
-        return int(upper_bound(a.begin(), a.end(), key) - a.begin());
-    }
-
-    // ---------- Bitmask DP helper (iterate submasks) ----------
-    // iterate all submasks of mask: for (int s = mask; s; s = (s-1)&mask) { ... } and include 0 if needed
-
-    // ---------- Utilities ----------
-    // clamp value
-    template<typename T>
-    static T clampVal(T x, T lo, T hi) { return x < lo ? lo : (x > hi ? hi : x); }
-
-    // join vector to string with separator (for debug/printing)
-    template<typename T>
-    static string join(const vector<T>& a, const string& sep=", ") {
-        ostringstream oss;
-        for (size_t i=0;i<a.size();++i) {
-            if (i) oss << sep;
-            oss << a[i];
-        }
-        return oss.str();
-    }
-
-    // ---------- Misc Helpers ----------
-    // Convert integer to vector of digits (base 10)
-    static vector<int> digits(int x) {
-        if (x==0) return {0};
-        vector<int> d;
-        while (x>0) { d.push_back(x%10); x/=10; }
-        reverse(d.begin(), d.end());
-        return d;
-    }
-
-    // Next permutation (wrapper)
-    template<typename T>
-    static bool nextPerm(vector<T>& a) { return next_permutation(a.begin(), a.end()); }
-
-    // Prev permutation (wrapper)
-    template<typename T>
-    static bool prevPerm(vector<T>& a) { return prev_permutation(a.begin(), a.end()); }
-
-    // Count set bits in 64-bit
-    static int countSetBits64(long long x) { return __builtin_popcountll((unsigned long long)x); }
-
-    // Fast power for long long (non-modular)
-    static long long powll(long long a, long long e) {
-        long long r = 1;
-        while (e>0) {
-            if (e&1) r = r*a;
-            a = a*a;
+    // ---------------------- Modular exponentiation (modular pow) ----------------------
+    // computes a^e % mod (mod fits in 64-bit)
+    static long long modPow(long long a, long long e, long long mod) {
+        a %= mod;
+        long long res = 1 % mod;
+        while (e > 0) {
+            if (e & 1) res = (__int128)res * a % mod;
+            a = (__int128)a * a % mod;
             e >>= 1;
         }
-        return r;
+        return res;
     }
 
-    // Ceiling of integer division
-    static long long ceilDiv(long long a, long long b) {
-        if (b<0) a=-a, b=-b;
-        if (b==0) throw runtime_error("division by zero");
-        return (a + b - 1) / b;
+    // ---------------------- Precompute factorials / inverse factorials ----------------------
+    // call initFactorials(maxN, MOD) to precompute for nCr modulo MOD
+    static vector<long long> fact, invfact;
+    static void initFactorials(int maxN, int mod) {
+        fact.assign(maxN+1, 1);
+        invfact.assign(maxN+1, 1);
+        for (int i=1;i<=maxN;++i) fact[i] = fact[i-1] * i % mod;
+        invfact[maxN] = modInverseExt(fact[maxN], mod);
+        for (int i=maxN;i>0;--i) invfact[i-1] = invfact[i] * i % mod;
+    }
+    static long long nCrMod(long long n, long long r, int mod) {
+        if (r<0 || r>n) return 0;
+        return fact[n] * invfact[r] % mod * invfact[n-r] % mod;
     }
 
-}; // end class Solution
+    // ---------------------- Simple sieve of primes ----------------------
+    static vector<int> sievePrimes(int n) {
+        vector<char> isPrime(n+1, true);
+        vector<int> primes;
+        if (n < 2) return primes;
+        isPrime[0]=isPrime[1]=false;
+        for (int i=2;i<=n;++i) {
+            if (isPrime[i]) {
+                primes.push_back(i);
+                if ((long long)i * i <= n)
+                    for (int j=i*i; j<=n; j+=i) isPrime[j]=false;
+            }
+        }
+        return primes;
+    }
 
-// ---------------------------- Example usage notes ----------------------------
-// - Many of these helpers are static and can be called as Solution::dijkstra(...), etc.
-// - DSU, Fenwick, SegmentTree are nested types and can be instantiated with Solution::DSU d(n);
-// - KMP usage: auto occ = Solution::kmpSearch(text, pattern);
-// - RollingHash: RollingHash rh(s); auto h = rh.get(l, r); // [l,r)
-// -----------------------------------------------------------------------------
+    // ---------------------- Miller-Rabin primality test (deterministic for 64-bit) ----------------------
+    static bool millerRabinDet(long long n) {
+        if (n<2) return false;
+        for (long long p : {2,3,5,7,11,13,17,19,23,29,31,37}) {
+            if (n%p==0) return n==p;
+        }
+        long long d = n-1, s = 0;
+        while ((d & 1) == 0) { d >>= 1; ++s; }
+        // bases for deterministic 64-bit test
+        long long bases[] = {2,325,9375,28178,450775,9780504,1795265022};
+        for (long long a : bases) {
+            if (a % n == 0) continue;
+            long long x = modPow(a, d, n);
+            if (x==1 || x==n-1) continue;
+            bool composite = true;
+            for (int r=1;r<s;++r) {
+                x = (__int128)x * x % n;
+                if (x == n-1) { composite = false; break; }
+            }
+            if (composite) return false;
+        }
+        return true;
+    }
+
+    // ---------------------- Baby-step Giant-step (discrete log) ----------------------
+    // solves a^x = b (mod m), returns x >= 0 or -1 if no solution (m doesn't have to be prime)
+    static long long babyStepGiantStep(long long a, long long b, long long m) {
+        a %= m; b %= m;
+        if (m==1) return 0;
+        long long cnt = 0;
+        long long t = 1;
+        long long g;
+        while ((g = std::gcd(a, m)) > 1) {
+            if (b == t) return cnt;
+            if (b % g) return -1;
+            b /= g; m /= g; t = t * (a/g) % m;
+            ++cnt;
+        }
+        long long n = (long long) sqrt(m) + 1;
+        unordered_map<long long,long long> vals;
+        long long an = 1;
+        for (long long i=0;i<n;++i) an = (__int128)an * a % m;
+        long long cur = b;
+        for (long long q=0;q<=n;++q) {
+            vals[cur] = q;
+            cur = (__int128)cur * a % m;
+        }
+        cur = t;
+        for (long long p=1;p<=n+1;++p) {
+            if (vals.count(cur)) {
+                long long ans = p*n - vals[cur] + cnt;
+                return ans;
+            }
+            cur = (__int128)cur * an % m;
+        }
+        return -1;
+    }
+
+    // ---------------------- Chinese remainder theorem ----------------------
+    // given pairs (r_i, m_i) with pairwise-coprime m_i, returns x mod M (or { -1, -1 } if no solution)
+    static pair<long long,long long> crt(const vector<long long>& r, const vector<long long>& m) {
+        long long x = 0;
+        long long M = 1;
+        int k = r.size();
+        for (int i=0;i<k;++i) M *= m[i];
+        for (int i=0;i<k;++i) {
+            long long Mi = M / m[i];
+            long long inv = modInverseExt(Mi % m[i], m[i]);
+            if (inv == -1) return {-1,-1};
+            x = (x + (__int128)r[i] * Mi % M * inv) % M;
+        }
+        if (x < 0) x += M;
+        return {x, M};
+    }
+
+    // ---------------------- 0-1 BFS (shortest path for 0/1 weighted edges) ----------------------
+    static vector<long long> zeroOneBFS(int n, const vector<vector<pair<int,int>>>& adj, int src) {
+        const long long INF = (1LL<<60);
+        deque<int> dq;
+        vector<long long> dist(n+1, INF);
+        dist[src] = 0;
+        dq.push_back(src);
+        while (!dq.empty()) {
+            int u = dq.front(); dq.pop_front();
+            for (auto &e : adj[u]) {
+                int v = e.first; int w = e.second;
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    if (w == 0) dq.push_front(v);
+                    else dq.push_back(v);
+                }
+            }
+        }
+        return dist;
+    }
+
+    // ---------------------- Kosaraju SCC (strongly connected components) ----------------------
+    static vector<int> kosarajuSCC(int n, const vector<vector<int>>& adj) {
+        vector<char> vis(n+1, 0);
+        vector<int> order;
+        function<void(int)> dfs1 = [&](int u) {
+            vis[u]=1;
+            for (int v: adj[u]) if (!vis[v]) dfs1(v);
+            order.push_back(u);
+        };
+        for (int i=1;i<=n;++i) if (!vis[i]) dfs1(i);
+        vector<vector<int>> radj(n+1);
+        for (int u=1;u<=n;++u) for (int v: adj[u]) radj[v].push_back(u);
+        vector<int> comp(n+1, 0);
+        int cid = 0;
+        function<void(int)> dfs2 = [&](int u) {
+            comp[u] = cid;
+            for (int v: radj[u]) if (!comp[v]) dfs2(v);
+        };
+        for (int i = (int)order.size()-1; i>=0; --i) {
+            int u = order[i];
+            if (!comp[u]) { ++cid; dfs2(u); }
+        }
+        // comp[1..n] gives component id (1..cid)
+        return comp;
+    }
+
+    // ---------------------- Binary lifting LCA (1-indexed nodes) ----------------------
+    struct LCA {
+        int n, LOG;
+        vector<vector<int>> up;
+        vector<int> depth;
+        LCA() : n(0), LOG(0) {}
+        void build(const vector<vector<int>>& tree, int root = 1) {
+            n = tree.size()-1;
+            LOG = 1;
+            while ((1<<LOG) <= n) ++LOG;
+            up.assign(LOG, vector<int>(n+1, 0));
+            depth.assign(n+1, 0);
+            function<void(int,int)> dfs = [&](int u, int p) {
+                up[0][u] = p;
+                for (int k=1;k<LOG;++k) up[k][u] = up[k-1][u] ? up[k-1][ up[k-1][u] ] : 0;
+                for (int v: tree[u]) if (v!=p) {
+                    depth[v] = depth[u] + 1;
+                    dfs(v, u);
+                }
+            };
+            depth[root] = 0;
+            dfs(root, 0);
+        }
+        int lift(int u, int k) {
+            for (int i=0;i<LOG && u; ++i) if (k & (1<<i)) u = up[i][u];
+            return u;
+        }
+        int lca(int a, int b) {
+            if (depth[a] < depth[b]) swap(a,b);
+            a = lift(a, depth[a]-depth[b]);
+            if (a==b) return a;
+            for (int k=LOG-1;k>=0;--k) if (up[k][a] != up[k][b]) {
+                a = up[k][a]; b = up[k][b];
+            }
+            return up[0][a];
+        }
+    };
+
+    // ---------------------- Dinic max-flow ----------------------
+    struct Dinic {
+        struct Edge { int v; long long cap; int rev; };
+        int N;
+        vector<vector<Edge>> G;
+        vector<int> level, it;
+        Dinic(int n=0) { init(n); }
+        void init(int n) { N=n; G.assign(N, {}); level.assign(N,0); it.assign(N,0); }
+        void addEdge(int u,int v,long long c) {
+            Edge a = {v, c, (int)G[v].size()};
+            Edge b = {u, 0, (int)G[u].size()};
+            G[u].push_back(a);
+            G[v].push_back(b);
+        }
+        bool bfs(int s,int t) {
+            fill(level.begin(), level.end(), -1);
+            queue<int> q; q.push(s); level[s]=0;
+            while (!q.empty()) {
+                int u=q.front(); q.pop();
+                for (auto &e: G[u]) if (e.cap>0 && level[e.v]==-1) {
+                    level[e.v]=level[u]+1; q.push(e.v);
+                }
+            }
+            return level[t] != -1;
+        }
+        long long dfs(int u,int t,long long f) {
+            if (u==t) return f;
+            for (int &i = it[u]; i<(int)G[u].size(); ++i) {
+                Edge &e = G[u][i];
+                if (e.cap > 0 && level[e.v] == level[u] + 1) {
+                    long long got = dfs(e.v, t, min(f, e.cap));
+                    if (got > 0) {
+                        e.cap -= got;
+                        G[e.v][e.rev].cap += got;
+                        return got;
+                    }
+                }
+            }
+            return 0;
+        }
+        long long maxFlow(int s,int t) {
+            long long flow = 0;
+            while (bfs(s,t)) {
+                fill(it.begin(), it.end(), 0);
+                while (true) {
+                    long long pushed = dfs(s,t, (1LL<<60));
+                    if (!pushed) break;
+                    flow += pushed;
+                }
+            }
+            return flow;
+        }
+    };
+
+    // ---------------------- Useful small helpers ----------------------
+    static bool isPowerOfTwo(long long x) { return x > 0 && (x & (x-1)) == 0; }
+    static long long nextPowerOfTwo(long long x) {
+        if (x <= 1) return 1;
+        --x;
+        for (int i=1;i<63;i<<=1) x |= x >> i;
+        return x+1;
+    }
+
+    // ---------------------- Notes ----------------------
+    // - Add `Solution::fact` and `Solution::invfact` declarations in a .cpp file if using multiple translation units:
+    //     vector<long long> Solution::fact; vector<long long> Solution::invfact;
+    // - Use these helpers as: Solution::modPow(a,e,mod), Solution::initFactorials(maxN, MOD), Solution::nCrMod(n,r,MOD), etc.
+    // - Dinic expects 0-indexed nodes for simplicity inside its struct; adapt when calling if your graph is 1-indexed.
+    // -----------------------------------------------------------------------------
+
