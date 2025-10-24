@@ -1,3 +1,142 @@
+import turtle
+import math
+
+# 🐢 Turtle Setup
+t = turtle.Turtle()
+turtle.bgcolor("white")
+t.speed(0)
+t.width(2)
+colors = ["red", "purple", "blue", "green", "orange", "yellow"]
+
+# 1️⃣ Spiral Flower Pattern
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(360):
+    t.color(colors[i % 6])
+    t.forward(i)
+    t.right(59)
+
+# 2️⃣ Expanding Circle Pattern
+t.penup()
+t.goto(0, 0)
+t.pendown()
+t.width(2)
+
+for i in range(50, 150, 10):
+    t.color(colors[i % 6])
+    t.circle(i)
+    t.right(10)
+
+# 3️⃣ Starburst
+t.penup()
+t.goto(0, 0)
+t.pendown()
+t.width(2)
+
+for i in range(60):
+    t.color(colors[i % 6])
+    t.forward(200)
+    t.backward(200)
+    t.right(6)
+
+# 4️⃣ Polygon Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(100):
+    t.color(colors[i % 6])
+    t.forward(i * 5)
+    t.right(91)
+
+# 5️⃣ Concentric Squares
+t.penup()
+t.goto(-50, -50)
+t.pendown()
+
+for i in range(10):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(100 + i * 20)
+        t.right(90)
+    t.right(10)
+
+# 6️⃣ Sunburst Rays
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(36):
+    t.color(colors[i % 6])
+    t.forward(150)
+    t.backward(150)
+    t.right(10)
+
+# 7️⃣ Radiant Circles
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(6):
+    t.color(colors[i])
+    t.circle(100 + i * 20)
+
+# 8️⃣ Flower Mandala
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(72):
+    t.color(colors[i % 6])
+    t.circle(100)
+    t.right(5)
+
+# 9️⃣ Hypnotic Rings
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(36):
+    t.color(colors[i % 6])
+    t.circle(50 + i * 5)
+    t.right(10)
+
+# 🔟 Zigzag Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(100):
+    t.color(colors[i % 6])
+    t.forward(i * 2)
+    t.right(91)
+
+# 11️⃣ Twisting Squares
+t.penup()
+t.goto(-50, -50)
+t.pendown()
+
+for i in range(36):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(100)
+        t.right(90)
+    t.right(10)
+
+# 12️⃣ Rainbow Polygon Swirl
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(90):
+    t.color(colors[i % 6])
+    for _ in range(6):
+        t.forward(100)
+        t.right(60)
+    t.right(11)
+
 # 13️⃣ Radiant Wave Pattern
 # Creates colorful waves that look like flowing ribbons.
 t.penup()
@@ -37,7 +176,6 @@ for i in range(30):
     t.forward(10)
 
 # 15️⃣ Geometric Web
-# Creates a complex web-like structure using overlapping lines.
 t.penup()
 t.goto(0, 0)
 t.pendown()
@@ -54,7 +192,6 @@ for i in range(60):
     t.right(6)
 
 # 16️⃣ Spiral Triangles
-# Draws triangles expanding in a spiral pattern.
 t.penup()
 t.goto(0, 0)
 t.pendown()
@@ -68,7 +205,6 @@ for i in range(60):
     t.right(10)
 
 # 17️⃣ Daisy Flower Field
-# Draws multiple flower-like patterns at different positions.
 t.width(2)
 positions = [(-200, 200), (200, 200), (-200, -200), (200, -200), (0, -250)]
 
@@ -84,7 +220,6 @@ for pos in positions:
         t.left(10)
 
 # 18️⃣ Fractal Leaf Pattern
-# Creates recursive leaves for a fractal look.
 t.penup()
 t.goto(0, -100)
 t.pendown()
@@ -107,7 +242,6 @@ draw_branch(60)
 t.right(90)
 
 # 19️⃣ Spiral Dots Galaxy
-# Creates a galactic spiral made of colorful dots.
 t.penup()
 t.goto(0, 0)
 t.pendown()
@@ -119,7 +253,6 @@ for i in range(150):
     t.right(20)
 
 # 20️⃣ Infinity Loop Pattern
-# Draws looping infinity curves with rotating colors.
 t.penup()
 t.goto(0, 0)
 t.pendown()
@@ -133,7 +266,6 @@ for i in range(72):
     t.right(5)
 
 # 21️⃣ Final Title and Border Frame
-# Draws a finishing frame and a title for the entire artwork.
 t.penup()
 t.goto(-350, -300)
 t.pendown()
@@ -145,7 +277,7 @@ for _ in range(4):
     t.left(90)
 
 t.penup()
-t.goto(-80, 250)
+t.goto(-100, 260)
 t.pendown()
 t.color("darkblue")
 t.write("✨ Turtle Masterpiece ✨", font=("Verdana", 20, "bold"))
