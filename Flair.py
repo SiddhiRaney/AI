@@ -20,3 +20,30 @@ print("Tagged sentence:", sentence.to_tagged_string())
 print("\nDetailed entity information:")
 for entity in sentence.get_spans('ner'):
     print(f"Entity: {entity.text}, Type: {entity.get_label('ner').value}, Score: {entity.score:.4f}")
+
+# Step 6: Try NER on multiple sentences
+print("\n--- Multiple Sentence Example ---")
+sentences = [
+    "Elon Musk founded SpaceX and co-founded Tesla.",
+    "Google is headquartered in Mountain View, California.",
+    "Taylor Swift performed in Paris last week."
+]
+
+for text in sentences:
+    sent = Sentence(text)
+    tagger.predict(sent)
+    print(f"\nInput: {text}")
+    print("Tagged:", sent.to_tagged_string())
+    for entity in sent.get_spans('ner'):
+        print(f"  → Entity: {entity.text}, Type: {entity.get_label('ner').value}, Score: {entity.score:.4f}")
+
+# Step 7: Allow user to test their own input
+print("\n--- Custom Input Example ---")
+user_text = input("Enter a sentence to analyze entities: ")
+user_sentence = Sentence(user_text)
+tagger.predict(user_sentence)
+print("Tagged:", user_sentence.to_tagged_string())
+
+print("\nRecognized Entities:")
+for entity in user_sentence.get_spans('ner'):
+    print(f"Entity: {entity.text}, Type: {entity.get_label('ner').value}, Score: {entity.score:.4f}")
