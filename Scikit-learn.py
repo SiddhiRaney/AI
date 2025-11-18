@@ -28,3 +28,18 @@ y_pred = clf.predict(X_test)
 # 6️⃣ Evaluate the model
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("Classification Report:\n", classification_report(y_test, y_pred))
+
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'C': [0.1, 1, 10],
+    'kernel': ['linear', 'rbf', 'poly'],
+    'gamma': ['scale', 'auto']
+}
+
+grid = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy')
+grid.fit(X_train, y_train)
+
+print("Best Parameters:", grid.best_params_)
+y_pred = grid.predict(X_test)
+print("Accuracy after tuning:", accuracy_score(y_test, y_pred))
