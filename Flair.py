@@ -82,3 +82,53 @@ def run_ner_on_file(in_file, out_file):
 
 # Example usage:
 # run_ner_on_file("input.txt", "ner_output.txt")
+
+# --- Main Driver / Continuation ---
+
+def main():
+    print("Choose mode:")
+    print("1. Single sentence NER")
+    print("2. Multiple examples")
+    print("3. Interactive NER")
+    print("4. NER from file")
+    print("5. Exit")
+
+    while True:
+        choice = input("\nEnter option (1-5): ")
+
+        if choice == "1":
+            txt = input("Enter a sentence: ")
+            run_ner(txt)
+
+        elif choice == "2":
+            print("\n--- Running on predefined examples ---\n")
+            for txt in examples:
+                print("Input:", txt)
+                run_ner(txt)
+
+        elif choice == "3":
+            print("\n--- Interactive NER Mode (type 'exit' to stop) ---")
+            while True:
+                txt = input("Enter a sentence: ")
+                if txt.lower() == "exit":
+                    print("Exiting interactive mode...\n")
+                    break
+                run_ner(txt)
+
+        elif choice == "4":
+            in_file = input("Enter input filename: ")
+            out_file = input("Enter output filename: ")
+            run_ner_on_file(in_file, out_file)
+
+        elif choice == "5":
+            print("Goodbye!")
+            break
+
+        else:
+            print("Invalid choice. Try again.")
+
+
+# Run only if executed directly
+if __name__ == "__main__":
+    main()
+
