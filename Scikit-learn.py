@@ -43,3 +43,8 @@ grid.fit(X_train, y_train)
 print("Best Parameters:", grid.best_params_)
 y_pred = grid.predict(X_test)
 print("Accuracy after tuning:", accuracy_score(y_test, y_pred))
+
+from sklearn.metrics import confusion_matrix
+
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:\n", cm)
