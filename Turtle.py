@@ -285,3 +285,121 @@ t.write("✨ Turtle Masterpiece ✨", font=("Verdana", 20, "bold"))
 # Hide the turtle cursor
 t.hideturtle()
 turtle.done()
+# 22️⃣ Spiral Star Chain
+t.penup()
+t.goto(0, 0)
+t.pendown()
+t.width(2)
+
+def star(size):
+    for _ in range(5):
+        t.forward(size)
+        t.right(144)
+
+for i in range(30):
+    t.color(colors[i % 6])
+    star(50 + i * 2)
+    t.right(12)
+
+# 23️⃣ Hexagon Flower Burst
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(60):
+    t.color(colors[i % 6])
+    for _ in range(6):
+        t.forward(120)
+        t.right(60)
+    t.right(6)
+
+# 24️⃣ Wave Rings Expansion
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(1, 120):
+    t.color(colors[i % 6])
+    t.circle(i * 2)
+    t.left(5)
+
+# 25️⃣ Grid Mandala
+t.penup()
+t.goto(-200, -200)
+t.pendown()
+
+for i in range(20):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(400)
+        t.left(90)
+    t.left(5)
+
+# 26️⃣ Twisted Pentagon Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(80):
+    t.color(colors[i % 6])
+    for _ in range(5):
+        t.forward(i * 3)
+        t.right(72)
+    t.right(7)
+
+# 27️⃣ Radiant Sun Halo
+t.penup()
+t.goto(0, -150)
+t.pendown()
+t.width(3)
+
+for i in range(72):
+    t.color(colors[i % 6])
+    t.circle(150)
+    t.right(5)
+
+# 28️⃣ Butterfly Loop
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(100):
+    t.color(colors[i % 6])
+    t.circle(100, 45)
+    t.left(90)
+    t.circle(100, 45)
+    t.right(10)
+
+# 29️⃣ Neon Lightning Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(150):
+    t.color(colors[i % 6])
+    t.forward(i * 3)
+    t.right(135)
+
+# 30️⃣ Optical Illusion Rings
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(36):
+    t.color(colors[i % 6])
+    t.circle(200)
+    t.right(10)
+    t.circle(100)
+    t.right(10)
+
+# 31️⃣ Lotus Mandala
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(48):
+    t.color(colors[i % 6])
+    t.circle(80)
+    t.left(30)
+    t.circle(40)
+    t.right(37)
