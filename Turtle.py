@@ -403,3 +403,155 @@ for i in range(48):
     t.left(30)
     t.circle(40)
     t.right(37)
+
+# 32️⃣ Spiral Rose
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(200):
+    t.color(colors[i % 6])
+    t.forward(i / 2)
+    t.right(45)
+
+# 33️⃣ Square Wave Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(150):
+    t.color(colors[i % 6])
+    t.forward(i * 2)
+    t.right(90)
+
+# 34️⃣ Radiant Diamond Star
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(60):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(120)
+        t.right(60)
+    t.right(6)
+
+# 35️⃣ Pulsating Circles
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(80):
+    t.color(colors[i % 6])
+    t.circle(30 + i * 2)
+    t.left(15)
+
+# 36️⃣ Tornado Spiral
+t.penup()
+t.goto(0, -200)
+t.pendown()
+
+for i in range(150):
+    t.color(colors[i % 6])
+    t.forward(i)
+    t.left(20)
+
+# 37️⃣ Flower Wheel
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(72):
+    t.color(colors[i % 6])
+    t.circle(100, 60)
+    t.left(120)
+    t.circle(100, 60)
+    t.left(10)
+
+# 38️⃣ Hypnotic Square Rings
+t.penup()
+t.goto(-100, -100)
+t.pendown()
+
+for i in range(40):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(200 + i * 5)
+        t.right(90)
+    t.right(5)
+
+# 39️⃣ Galaxy Arms
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(300):
+    t.color(colors[i % 6])
+    t.forward(i / 3)
+    t.right(17)
+
+# 40️⃣ Snowflake Geometry
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(6):
+    for _ in range(3):
+        t.forward(120)
+        t.backward(120)
+        t.right(45)
+    t.right(60)
+
+# 41️⃣ DNA Helix Pattern
+t.penup()
+t.goto(-200, 0)
+t.pendown()
+
+for i in range(200):
+    t.color(colors[i % 6])
+    t.forward(4)
+    t.left(math.sin(i / 10) * 15)
+
+# 42️⃣ Sunflower Spiral (Phyllotaxis)
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(200):
+    t.color(colors[i % 6])
+    t.forward(i * 0.5)
+    t.right(137.5)
+
+# 43️⃣ Interlaced Circles
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(12):
+    t.color(colors[i % 6])
+    t.circle(120)
+    t.right(30)
+
+# 44️⃣ Zigzag Flower Burst
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(72):
+    t.color(colors[i % 6])
+    t.forward(150)
+    t.right(150)
+    t.forward(150)
+    t.left(5)
+
+# 45️⃣ Final Cosmic Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+t.width(3)
+
+for i in range(250):
+    t.color(colors[i % 6])
+    t.forward(i)
+    t.right(121)
+
