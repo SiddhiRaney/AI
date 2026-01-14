@@ -555,3 +555,117 @@ for i in range(250):
     t.forward(i)
     t.right(121)
 
+# 46️⃣ Rose Curve (Mathematical Flower)
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+k = 5
+for i in range(360):
+    t.color(colors[i % 6])
+    r = 200 * math.sin(k * math.radians(i))
+    t.forward(r / 20)
+    t.left(1)
+
+# 47️⃣ Circular Lattice
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(36):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(150)
+        t.right(90)
+    t.right(10)
+
+# 48️⃣ Spiral Hex Web
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(70):
+    t.color(colors[i % 6])
+    for _ in range(6):
+        t.forward(i * 3)
+        t.right(60)
+    t.right(8)
+
+# 49️⃣ Radiant Petal Bloom
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(120):
+    t.color(colors[i % 6])
+    t.circle(100, 60)
+    t.left(120)
+    t.circle(100, 60)
+    t.left(3)
+
+# 50️⃣ Cosmic Triangle Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(120):
+    t.color(colors[i % 6])
+    for _ in range(3):
+        t.forward(i * 4)
+        t.right(120)
+    t.right(6)
+
+# 51️⃣ Orbit Rings
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(50):
+    t.color(colors[i % 6])
+    t.circle(50 + i * 4)
+    t.right(15)
+
+# 52️⃣ Crystal Star Bloom
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(72):
+    t.color(colors[i % 6])
+    for _ in range(8):
+        t.forward(120)
+        t.backward(120)
+        t.right(45)
+    t.right(5)
+
+# 53️⃣ Fibonacci Spiral
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+a, b = 1, 1
+for i in range(15):
+    t.color(colors[i % 6])
+    t.circle(a * 10, 90)
+    a, b = b, a + b
+
+# 54️⃣ Electric Zigzag Wheel
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(180):
+    t.color(colors[i % 6])
+    t.forward(150)
+    t.right(170)
+
+# 55️⃣ Ultimate Mandala Finale
+t.penup()
+t.goto(0, 0)
+t.pendown()
+t.width(4)
+
+for i in range(144):
+    t.color(colors[i % 6])
+    t.circle(180)
+    t.right(5)
