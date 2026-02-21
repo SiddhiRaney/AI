@@ -60,3 +60,18 @@ plt.show()
 new_sample = np.array([[5.1, 3.5, 1.4, 0.2]])  # Example flower measurements
 predicted_class = rf_model.predict(new_sample)
 print(f"\nPredicted class for {new_sample}: {data.target_names[predicted_class][0]}")
+
+# Step 11: Predict class probabilities for the new sample
+probabilities = rf_model.predict_proba(new_sample)
+
+print("\nPrediction Probabilities:")
+for i, class_name in enumerate(data.target_names):
+    print(f"{class_name}: {probabilities[0][i]:.4f}")
+
+# Step 12: Cross-validation for more reliable evaluation
+from sklearn.model_selection import cross_val_score
+
+cv_scores = cross_val_score(rf_model, X, y, cv=5)
+
+print("\nCross-Validation Scores:", cv_scores)
+print("Average CV Accuracy:", cv_scores.mean())
