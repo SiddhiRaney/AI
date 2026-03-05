@@ -143,3 +143,152 @@ plt.title("10. Saving Plot")
 
 plt.savefig("my_plot.png")  # Saves plot as image file
 plt.show()
+
+# ------------------------------------------
+# 1️⃣1️⃣ AREA PLOT (FILL BETWEEN)
+# ------------------------------------------
+
+x11 = [1, 2, 3, 4, 5]
+y11 = [3, 5, 2, 6, 4]
+
+plt.figure()
+plt.plot(x11, y11)
+plt.fill_between(x11, y11)  # Fill area under line
+plt.title("11. Area Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣2️⃣ STEP PLOT
+# ------------------------------------------
+
+x12 = [1, 2, 3, 4, 5]
+y12 = [10, 20, 15, 30, 25]
+
+plt.figure()
+plt.step(x12, y12)  # Step-like graph
+plt.title("12. Step Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣3️⃣ STEM PLOT
+# ------------------------------------------
+
+x13 = [1, 2, 3, 4, 5]
+y13 = [5, 9, 7, 6, 3]
+
+plt.figure()
+plt.stem(x13, y13)  # Discrete data visualization
+plt.title("13. Stem Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣4️⃣ STACKED AREA PLOT
+# ------------------------------------------
+
+x14 = [1, 2, 3, 4]
+y14_1 = [3, 4, 5, 6]
+y14_2 = [1, 2, 1, 2]
+
+plt.figure()
+plt.stackplot(x14, y14_1, y14_2)
+plt.title("14. Stacked Area Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣5️⃣ BOXPLOT
+# ------------------------------------------
+
+data15 = [10, 20, 30, 40, 50, 60, 100]
+
+plt.figure()
+plt.boxplot(data15)  # Shows quartiles and outliers
+plt.title("15. Box Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣6️⃣ ERROR BAR PLOT
+# ------------------------------------------
+
+x16 = [1, 2, 3, 4]
+y16 = [10, 20, 15, 25]
+error = [1, 3, 2, 4]
+
+plt.figure()
+plt.errorbar(x16, y16, yerr=error)  # Adds error bars
+plt.title("16. Error Bar Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣7️⃣ LOG SCALE PLOT
+# ------------------------------------------
+
+x17 = [1, 10, 100, 1000]
+y17 = [1, 2, 3, 4]
+
+plt.figure()
+plt.plot(x17, y17)
+plt.xscale("log")  # Logarithmic scale
+plt.title("17. Log Scale Plot")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣8️⃣ CUSTOMIZED LINE STYLE
+# ------------------------------------------
+
+x18 = [1, 2, 3, 4, 5]
+y18 = [2, 3, 5, 7, 11]
+
+plt.figure()
+plt.plot(x18, y18, linestyle="--", marker="o")  # Dashed line with markers
+plt.title("18. Customized Line Style")
+plt.show()
+
+
+# ------------------------------------------
+# 1️⃣9️⃣ MULTIPLE SUBPLOTS (2x2 GRID)
+# ------------------------------------------
+
+plt.figure()
+
+plt.subplot(2,2,1)
+plt.plot([1,2,3],[1,4,9])
+plt.title("Plot 1")
+
+plt.subplot(2,2,2)
+plt.plot([1,2,3],[1,2,3])
+plt.title("Plot 2")
+
+plt.subplot(2,2,3)
+plt.plot([1,2,3],[3,2,1])
+plt.title("Plot 3")
+
+plt.subplot(2,2,4)
+plt.plot([1,2,3],[2,3,4])
+plt.title("Plot 4")
+
+plt.tight_layout()
+plt.show()
+
+
+# ------------------------------------------
+# 2️⃣0️⃣ ANNOTATION ON PLOT
+# ------------------------------------------
+
+x20 = [1, 2, 3, 4]
+y20 = [10, 20, 15, 25]
+
+plt.figure()
+plt.plot(x20, y20)
+
+plt.annotate("Highest Point", xy=(4,25), xytext=(3,22),
+             arrowprops=dict())
+
+plt.title("20. Plot Annotation")
+plt.show()
