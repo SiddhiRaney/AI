@@ -669,3 +669,64 @@ for i in range(144):
     t.color(colors[i % 6])
     t.circle(180)
     t.right(5)
+
+# 56️⃣ Spiral Starburst Galaxy
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(200):
+    t.color(colors[i % 6])
+    t.forward(i * 1.5)
+    t.right(144)
+
+
+# 57️⃣ Concentric Triangle Rings
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(40):
+    t.color(colors[i % 6])
+    for _ in range(3):
+        t.forward(100 + i * 10)
+        t.right(120)
+    t.right(5)
+
+
+# 58️⃣ Radiating Square Fan
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(72):
+    t.color(colors[i % 6])
+    for _ in range(4):
+        t.forward(120)
+        t.right(90)
+    t.right(5)
+
+
+# 59️⃣ Expanding Spiral Circles
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(150):
+    t.color(colors[i % 6])
+    t.circle(i * 1.5)
+    t.right(12)
+
+
+# 60️⃣ Infinity Flower Finale
+t.penup()
+t.goto(0, 0)
+t.pendown()
+t.width(3)
+
+for i in range(120):
+    t.color(colors[i % 6])
+    t.circle(120, 90)
+    t.right(90)
+    t.circle(120, 90)
+    t.right(3)
